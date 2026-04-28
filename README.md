@@ -63,6 +63,8 @@ Reference intakes follow EU Regulation No.&nbsp;1169/2011 for adults. Fiber uses
 
 All data stays in your browser. No tracking, no backend, no analytics.
 
+Built as a vibe coding project with [Claude](https://claude.ai).
+
 
 ## Images
 ![Screenshot](images/image1.png)
