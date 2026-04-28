@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meal Radar – Nährstoffanalyse</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="shortcut icon" href="favicon/favicon.ico">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <!-- Prevent dark-mode flash: read preference before CSS renders -->
+  <script>
+    (function () {
+      const t = localStorage.getItem('mealradar_theme');
+      const d = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (t === 'dark' || (!t && d)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <h1>Meal Radar</h1>
+      <p>Nährstoffanalyse mit Tages-Referenzwerten</p>
+    </div>
+    <button id="theme-toggle" class="theme-btn" title="Dunkel-Modus">Dark</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- LEBENSMITTEL HINZUFÜGEN / VORLAGEN -->
+  <div class="card">
+    <div class="card-title">Lebensmittel</div>
+    <div class="search-bar">
+      <input id="preset-search" type="search" placeholder="Lebensmittel suchen …" autocomplete="off">
+      <button class="btn btn-primary" id="btn-new">+ Neu</button>
+    </div>
+    <div id="presets-container"></div>
+  </div>
+
+  <!-- IN DER MAHLZEIT -->
+  <div class="card" id="food-list-card" style="display:none">
+    <div class="card-title card-toggle">In der Mahlzeit</div>
+    <div class="card-body">
+      <div class="food-list" id="food-list"></div>
+    </div>
+  </div>
+
+  <!-- DIAGRAMM -->
+  <div class="card" id="chart-card" style="display:none">
+    <div class="card-title card-toggle">Anteil an Tages-Referenzwerten</div>
+    <div class="card-body">
+      <div id="nutrient-toggles" class="nutrient-toggles"></div>
+      <div class="chart-wrapper" id="chart-wrapper">
+        <canvas id="chart"></canvas>
+      </div>
+      <p class="ri-hint">
+        Rote Linie = 100 % RI &nbsp;|&nbsp;
+        Y-Achse: Nährstoff &middot; Gesamtmenge&thinsp;/&thinsp;Referenzwert &nbsp;|&nbsp;
+        Ballaststoffe: DGE-Richtwert &ge;30&thinsp;g/Tag
+      </p>
+    </div>
+  </div>
+
+  <!-- NÄHRSTOFFBILANZ -->
+  <div class="card" id="summary-card" style="display:none">
+    <div class="card-title card-toggle">Nährstoffbilanz</div>
+    <div class="card-body">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Nährstoff</th>
+            <th>Gesamt</th>
+            <th>RI&thinsp;/&thinsp;Tag</th>
+            <th>Anteil</th>
+          </tr>
+        </thead>
+        <tbody id="summary-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AKTIONEN -->
+  <div class="card">
+    <div class="actions">
+      <button class="btn btn-secondary" id="btn-copy">Link kopieren</button>
+      <button class="btn btn-danger"    id="btn-clear">Alle löschen</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>
+    Referenzwerte gemäß EU-Verordnung&thinsp;Nr.&thinsp;1169/2011 für <strong>Erwachsene</strong>.
+    Ballaststoffe: DGE-Richtwert (&ge;30&thinsp;g/Tag).
+    Alle Angaben ohne Gewähr.
+  </p>
+  <div class="footer-links">
+    <span class="footer-version">v1.0</span>
+    <span aria-hidden="true">&middot;</span>
+    <a href="https://github.com/Macusercom/Meal-Radar" target="_blank" rel="noopener">Quellcode</a>
+    <span aria-hidden="true">&middot;</span>
+    <a href="datenschutz.html">Datenschutz</a>
+    <span aria-hidden="true">&middot;</span>
+    <a href="impressum.html">Impressum</a>
+  </div>
+</footer>
+
+<!-- DIALOG: Lebensmittel hinzufügen / bearbeiten -->
+<dialog id="food-dialog">
+  <div class="dlg-header">
+    <h2 id="dlg-title">Lebensmittel hinzufügen</h2>
+    <button class="dlg-close" id="dlg-close" type="button" aria-label="Schließen">&#x2715;</button>
+  </div>
+
+  <div class="dlg-body">
+    <div id="dlg-error" class="dlg-error" style="display:none" role="alert"></div>
+    <form id="food-form" novalidate>
+      <div class="form-grid">
+        <div class="field span2">
+          <label for="f-name">Produkt *</label>
+          <input id="f-name" name="name" type="text" placeholder="z.&nbsp;B. Haferflocken" autocomplete="off" required>
+        </div>
+        <div class="field span2">
+          <label for="f-amount">Menge (g) *</label>
+          <input id="f-amount" name="amount" type="number" min="0.1" step="0.1" placeholder="z.&nbsp;B. 80">
+          <div class="amount-presets">
+            <button type="button" class="amount-btn" data-g="25">25</button>
+            <button type="button" class="amount-btn" data-g="50">50</button>
+            <button type="button" class="amount-btn" data-g="75">75</button>
+            <button type="button" class="amount-btn" data-g="100">100</button>
+            <button type="button" class="amount-btn" data-g="150">150</button>
+            <button type="button" class="amount-btn" data-g="200">200</button>
+            <button type="button" class="amount-btn" data-g="250">250</button>
+            <button type="button" class="amount-btn" data-g="300">300</button>
+          </div>
+        </div>
+        <details id="nutrient-details" class="span2" open>
+          <summary>Nährwerte (g&thinsp;/&thinsp;100&thinsp;g)</summary>
+          <div class="nutrient-sub-grid">
+            <div class="field">
+              <label for="f-kcal">kcal</label>
+              <input id="f-kcal" name="kcal" type="number" min="0" step="0.1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="f-fat">Fett</label>
+              <input id="f-fat" name="fat" type="number" min="0" step="0.01" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="f-sfat">Ges. Fettsäuren</label>
+              <input id="f-sfat" name="sfat" type="number" min="0" step="0.01" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="f-carbs">Kohlenhydrate</label>
+              <input id="f-carbs" name="carbs" type="number" min="0" step="0.01" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="f-sugar">Zucker</label>
+              <input id="f-sugar" name="sugar" type="number" min="0" step="0.01" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="f-fiber">Ballaststoffe</label>
+              <input id="f-fiber" name="fiber" type="number" min="0" step="0.01" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="f-protein">Eiweiß</label>
+              <input id="f-protein" name="protein" type="number" min="0" step="0.01" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="f-salt">Salz</label>
+              <input id="f-salt" name="salt" type="number" min="0" step="0.01" placeholder="0">
+            </div>
+          </div>
+        </details>
+      </div>
+    </form>
+  </div>
+
+  <div class="dlg-footer">
+    <button type="button" class="btn btn-ghost btn-sm" id="btn-save-preset">Vorlage speichern</button>
+    <div class="dlg-footer-btns">
+      <button type="button" class="btn btn-secondary" id="btn-cancel">Abbrechen</button>
+      <button type="submit" form="food-form" class="btn btn-primary" id="btn-submit">Hinzufügen</button>
+    </div>
+  </div>
+
+</dialog>
+
+<input type="file" id="import-input" accept=".json" style="display:none">
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
