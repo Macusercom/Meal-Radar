@@ -62,3 +62,11 @@ Reference intakes follow EU Regulation No.&nbsp;1169/2011 for adults. Fiber uses
 - Meal state is serialized as `btoa(encodeURIComponent(JSON.stringify(foods)))` and stored in the `?d=` URL parameter
 
 All data stays in your browser. No tracking, no backend, no analytics.
+
+
+## Images
+![Screenshot](images/image1.png)
+
+![Screenshot](images/image2.png)
+
+![Screenshot](images/image3.png)
