@@ -21,7 +21,7 @@ A web app for nutritional analysis of meals. Add foods, enter their nutrient val
 
 ## How To Use
 
-> Hosted version: open the GitHub Pages URL of this repo, or [Macusercom/Meal-Radar](https://github.com/Macusercom/Meal-Radar).
+> Hosted version: open the GitHub Pages URL of this repo, or [Macusercom/Meal-Radar](https://github.com/Macusercom/meal-radar).
 
 1. Click **+ New** to add a food item manually, or click any chip in the food database to pre-fill it.
 
