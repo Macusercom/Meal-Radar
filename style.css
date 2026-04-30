@@ -87,6 +87,41 @@ header p  { margin-top: 4px; opacity: .75; font-size: .88rem; }
 }
 .theme-btn:hover { background: rgba(255,255,255,.28); }
 
+/* ── Header actions cluster (lang toggle + theme btn) ── */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.ui-lang-toggle {
+  display: inline-flex;
+  gap: 2px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+  padding: 2px;
+}
+.ui-lang-btn {
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,.78);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  line-height: 1;
+  transition: background .15s, color .15s;
+}
+.ui-lang-btn:hover { color: #fff; background: rgba(255,255,255,.10); }
+.ui-lang-btn.active {
+  background: #fff;
+  color: #1e3a8a;
+}
+
 /* ═══════════════════════════════════════════
    LAYOUT
 ═══════════════════════════════════════════ */

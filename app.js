@@ -1,16 +1,198 @@
 /* ═══════════════════════════════════════════
+   I18N – STRINGS, language state, helpers
+═══════════════════════════════════════════ */
+const LANG_KEY = 'mealradar-lang';
+let uiLang = (() => {
+  const saved = localStorage.getItem(LANG_KEY);
+  return saved === 'de' || saved === 'en' ? saved : 'en';
+})();
+
+const STRINGS = {
+  de: {
+    page_title: 'Meal Radar – Nährstoffanalyse',
+    subtitle: 'Nährstoffanalyse mit Tages-Referenzwerten',
+    theme_dark_title: 'Dunkel-Modus',
+    theme_light_title: 'Hell-Modus',
+    theme_dark_label: 'Dark',
+    theme_light_label: 'Light',
+    card_food: 'Lebensmittel',
+    card_meal: 'In der Mahlzeit',
+    card_chart: 'Anteil an Tages-Referenzwerten',
+    card_balance: 'Nährstoffbilanz',
+    search_placeholder: 'Lebensmittel suchen …',
+    btn_new: '+ Neu',
+    btn_copy_link: 'Link kopieren',
+    btn_clear_all: 'Alle löschen',
+    ri_hint_html: 'Rote Linie = 100 % RI &nbsp;|&nbsp; Y-Achse: Nährstoff &middot; Gesamtmenge&thinsp;/&thinsp;Referenzwert &nbsp;|&nbsp; Ballaststoffe: DGE-Richtwert &ge;30&thinsp;g/Tag',
+    th_nutrient: 'Nährstoff',
+    th_total: 'Gesamt',
+    th_ri: 'RI / Tag',
+    th_share: 'Anteil',
+    footer_disclaimer_html: 'Referenzwerte gemäß EU-Verordnung&thinsp;Nr.&thinsp;1169/2011 für <strong>Erwachsene</strong>. Ballaststoffe: DGE-Richtwert (&ge;30&thinsp;g/Tag). Alle Angaben ohne Gewähr.',
+    footer_source: 'Quellcode',
+    footer_privacy: 'Datenschutz',
+    footer_imprint: 'Impressum',
+    dlg_close: 'Schließen',
+    dlg_title_add: 'Lebensmittel hinzufügen',
+    dlg_title_edit: 'Lebensmittel bearbeiten',
+    label_product: 'Produkt *',
+    ph_product: 'z. B. Haferflocken',
+    label_amount: 'Menge (g) *',
+    ph_amount: 'z. B. 80',
+    nutrient_summary: 'Nährwerte (g / 100 g)',
+    btn_save_preset: 'Vorlage speichern',
+    btn_cancel: 'Abbrechen',
+    btn_add: 'Hinzufügen',
+    btn_save: 'Speichern',
+    empty_search: 'Keine Treffer – klicke „+ Neu" für manuellen Eintrag.',
+    section_suggestions: 'Vorschläge',
+    section_my_presets: 'Meine Vorlagen',
+    btn_export: 'Exportieren',
+    btn_import: 'Importieren',
+    no_presets_title: 'Keine eigenen Vorlagen vorhanden',
+    presets_none_found: 'Keine eigenen Vorlagen gefunden.',
+    presets_none_yet: 'Noch keine eigenen Vorlagen. Im Formular auf „Vorlage speichern" klicken.',
+    storage_notice_html: '<span>&#9432;</span><span>Eingaben werden im <strong>localStorage</strong> dieses Browsers gespeichert – sie sind geräte- und browserspezifisch und gehen bei „Website-Daten löschen" verloren.</span>',
+    food_amount_aria: 'Menge in g',
+    food_btn_edit: 'Bearbeiten',
+    food_btn_remove: 'Entfernen',
+    chart_x_title: '% des Tages-Referenzwertes (RI)',
+    chart_total_label: 'Gesamt',
+    delete_preset_title: 'Vorlage löschen',
+    toast_preset_deleted: 'Vorlage „{name}" gelöscht.',
+    confirm_load_share: 'Einen geteilten Link öffnen? Deine aktuellen Einträge werden ersetzt.',
+    confirm_clear_all: 'Alle Einträge löschen?',
+    err_name_required: 'Bitte einen Produktnamen eingeben.',
+    err_amount_invalid: 'Bitte eine gültige Menge in Gramm eingeben (größer als 0).',
+    err_name_first: 'Bitte zuerst einen Produktnamen eingeben.',
+    err_preset_exists: 'Existiert bereits als Vorlage',
+    toast_export_empty: 'Keine eigenen Vorlagen zum Exportieren.',
+    toast_export_count: '{n} Vorlage(n) exportiert.',
+    toast_import_count: '{n} Vorlage(n) importiert.',
+    toast_import_count_skipped: '{n} Vorlage(n) importiert, {s} übersprungen.',
+    toast_import_invalid: 'Ungültige Datei – bitte eine Meal-Radar-JSON-Exportdatei wählen.',
+    toast_item_added: '„{name}" hinzugefügt.',
+    toast_item_updated: '„{name}" aktualisiert.',
+    toast_saved: 'Gespeichert',
+    toast_link_copied: 'Link kopiert!',
+    prompt_link: 'Link zum Kopieren:',
+    export_filename: 'meal-radar-vorlagen.json',
+  },
+  en: {
+    page_title: 'Meal Radar – Nutrient Analysis',
+    subtitle: 'Nutrient analysis with daily reference intakes',
+    theme_dark_title: 'Dark mode',
+    theme_light_title: 'Light mode',
+    theme_dark_label: 'Dark',
+    theme_light_label: 'Light',
+    card_food: 'Foods',
+    card_meal: 'In this meal',
+    card_chart: 'Share of daily reference intake',
+    card_balance: 'Nutrient balance',
+    search_placeholder: 'Search foods …',
+    btn_new: '+ New',
+    btn_copy_link: 'Copy link',
+    btn_clear_all: 'Clear all',
+    ri_hint_html: 'Red line = 100 % RI &nbsp;|&nbsp; Y-axis: nutrient &middot; total amount&thinsp;/&thinsp;reference value &nbsp;|&nbsp; Fibre: DGE guideline &ge;30&thinsp;g/day',
+    th_nutrient: 'Nutrient',
+    th_total: 'Total',
+    th_ri: 'RI / day',
+    th_share: 'Share',
+    footer_disclaimer_html: 'Reference intakes per EU Regulation&thinsp;No.&thinsp;1169/2011 for <strong>adults</strong>. Fibre: DGE guideline (&ge;30&thinsp;g/day). All information without warranty.',
+    footer_source: 'Source code',
+    footer_privacy: 'Privacy',
+    footer_imprint: 'Imprint',
+    dlg_close: 'Close',
+    dlg_title_add: 'Add food',
+    dlg_title_edit: 'Edit food',
+    label_product: 'Product *',
+    ph_product: 'e.g. rolled oats',
+    label_amount: 'Amount (g) *',
+    ph_amount: 'e.g. 80',
+    nutrient_summary: 'Nutrition (g / 100 g)',
+    btn_save_preset: 'Save preset',
+    btn_cancel: 'Cancel',
+    btn_add: 'Add',
+    btn_save: 'Save',
+    empty_search: 'No matches – click "+ New" to add a manual entry.',
+    section_suggestions: 'Suggestions',
+    section_my_presets: 'My presets',
+    btn_export: 'Export',
+    btn_import: 'Import',
+    no_presets_title: 'No custom presets available',
+    presets_none_found: 'No custom presets found.',
+    presets_none_yet: 'No custom presets yet. Click "Save preset" in the form.',
+    storage_notice_html: '<span>&#9432;</span><span>Entries are stored in this browser\'s <strong>localStorage</strong> – they are device- and browser-specific and will be lost when "Clear site data" is used.</span>',
+    food_amount_aria: 'Amount in g',
+    food_btn_edit: 'Edit',
+    food_btn_remove: 'Remove',
+    chart_x_title: '% of daily reference intake (RI)',
+    chart_total_label: 'Total',
+    delete_preset_title: 'Delete preset',
+    toast_preset_deleted: 'Preset "{name}" deleted.',
+    confirm_load_share: 'Open shared link? Your current entries will be replaced.',
+    confirm_clear_all: 'Delete all entries?',
+    err_name_required: 'Please enter a product name.',
+    err_amount_invalid: 'Please enter a valid amount in grams (greater than 0).',
+    err_name_first: 'Please enter a product name first.',
+    err_preset_exists: 'Already exists as a preset',
+    toast_export_empty: 'No custom presets to export.',
+    toast_export_count: '{n} preset(s) exported.',
+    toast_import_count: '{n} preset(s) imported.',
+    toast_import_count_skipped: '{n} preset(s) imported, {s} skipped.',
+    toast_import_invalid: 'Invalid file – please choose a Meal Radar JSON export.',
+    toast_item_added: '"{name}" added.',
+    toast_item_updated: '"{name}" updated.',
+    toast_saved: 'Saved',
+    toast_link_copied: 'Link copied!',
+    prompt_link: 'Link to copy:',
+    export_filename: 'meal-radar-presets.json',
+  },
+};
+
+function t(key, vars) {
+  let s = STRINGS[uiLang]?.[key] ?? STRINGS.en[key] ?? key;
+  if (vars) for (const k in vars) s = s.replaceAll(`{${k}}`, vars[k]);
+  return s;
+}
+
+// Translation map for category names. Built-in data uses German keys —
+// look them up here when rendering rather than migrating the data set.
+const CATEGORIES = {
+  'Proteinquellen':       { de: 'Proteinquellen',       en: 'Proteins' },
+  'Getreide & Beilagen':  { de: 'Getreide & Beilagen',  en: 'Grains & Sides' },
+  'Gemüse':               { de: 'Gemüse',               en: 'Vegetables' },
+  'Süßes & Snacks':       { de: 'Süßes & Snacks',       en: 'Sweets & Snacks' },
+  'Fette & Öle':          { de: 'Fette & Öle',          en: 'Fats & Oils' },
+  'Getränke':             { de: 'Getränke',             en: 'Beverages' },
+  'Nüsse & Kerne':        { de: 'Nüsse & Kerne',        en: 'Nuts & Seeds' },
+  'Gewürze & Toppings':   { de: 'Gewürze & Toppings',   en: 'Spices & Toppings' },
+  'Fertiggerichte':       { de: 'Fertiggerichte',       en: 'Ready Meals' },
+  'Brot & Gebäck':        { de: 'Brot & Gebäck',        en: 'Bread & Pastries' },
+  'Aufstriche':           { de: 'Aufstriche',           en: 'Spreads' },
+  'Eigene':               { de: 'Eigene',               en: 'Own' },
+};
+function tCategory(name) {
+  return CATEGORIES[name]?.[uiLang] ?? name;
+}
+
+/* ═══════════════════════════════════════════
    CONSTANTS
 ═══════════════════════════════════════════ */
 const NUTRIENTS = [
-  { key: 'kcal',    label: 'kcal',            ref: 2000, unit: 'kcal' },
-  { key: 'fat',     label: 'Fett',            ref: 70,   unit: 'g'   },
-  { key: 'sfat',    label: 'Ges. Fettsäuren', ref: 20,   unit: 'g'   },
-  { key: 'carbs',   label: 'Kohlenhydrate',   ref: 260,  unit: 'g'   },
-  { key: 'sugar',   label: 'Zucker',          ref: 90,   unit: 'g'   },
-  { key: 'fiber',   label: 'Ballaststoffe',   ref: 30,   unit: 'g',   minGoal: true },
-  { key: 'protein', label: 'Eiweiß',          ref: 50,   unit: 'g'   },
-  { key: 'salt',    label: 'Salz',            ref: 6,    unit: 'g'   },
+  { key: 'kcal',    labelDe: 'kcal',            labelEn: 'kcal',            ref: 2000, unit: 'kcal' },
+  { key: 'fat',     labelDe: 'Fett',            labelEn: 'Fat',             ref: 70,   unit: 'g'   },
+  { key: 'sfat',    labelDe: 'Ges. Fettsäuren', labelEn: 'Saturated fat',   ref: 20,   unit: 'g'   },
+  { key: 'carbs',   labelDe: 'Kohlenhydrate',   labelEn: 'Carbohydrates',   ref: 260,  unit: 'g'   },
+  { key: 'sugar',   labelDe: 'Zucker',          labelEn: 'Sugar',           ref: 90,   unit: 'g'   },
+  { key: 'fiber',   labelDe: 'Ballaststoffe',   labelEn: 'Fibre',           ref: 30,   unit: 'g',   minGoal: true },
+  { key: 'protein', labelDe: 'Eiweiß',          labelEn: 'Protein',         ref: 50,   unit: 'g'   },
+  { key: 'salt',    labelDe: 'Salz',            labelEn: 'Salt',            ref: 6,    unit: 'g'   },
 ];
+
+function nutrientLabel(n) {
+  return uiLang === 'de' ? n.labelDe : n.labelEn;
+}
 
 const COLORS = [
   '#3b82f6', '#ef4444', '#22c55e', '#f59e0b',
@@ -158,21 +340,22 @@ function isDark() {
 function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem(THEME_KEY, theme);
-  const btn = document.getElementById('theme-toggle');
-  btn.textContent = theme === 'dark' ? 'Light' : 'Dark';
-  btn.title = theme === 'dark' ? 'Hell-Modus' : 'Dunkel-Modus';
+  syncThemeButton();
   if (foods.length > 0) renderChart();   // update chart colours
 }
 
+function syncThemeButton() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  const dark = isDark();
+  btn.textContent = dark ? t('theme_light_label') : t('theme_dark_label');
+  btn.title       = dark ? t('theme_light_title') : t('theme_dark_title');
+}
+
 function initTheme() {
-  const saved = localStorage.getItem(THEME_KEY);
   // HTML already has the right attribute (set by inline script to avoid flash).
   // Just sync the button label.
-  const active = saved
-    || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  const btn = document.getElementById('theme-toggle');
-  btn.textContent = active === 'dark' ? 'Light' : 'Dark';
-  btn.title = active === 'dark' ? 'Hell-Modus' : 'Dunkel-Modus';
+  syncThemeButton();
 }
 
 document.getElementById('theme-toggle').addEventListener('click', () => {
@@ -229,7 +412,7 @@ function loadFromShareURL() {
       if (raw) { const p = JSON.parse(raw); if (Array.isArray(p)) existing = p; }
     } catch { /* ignore */ }
     if (existing.length > 0) {
-      if (!confirm('Einen geteilten Link öffnen? Deine aktuellen Einträge werden ersetzt.')) {
+      if (!confirm(t('confirm_load_share'))) {
         window.history.replaceState({}, '', window.location.pathname);
         return;
       }
@@ -272,7 +455,7 @@ function renderNutrientToggles() {
   NUTRIENTS.forEach(n => {
     const btn = document.createElement('button');
     btn.className = 'n-toggle' + (hiddenNutrients.has(n.key) ? ' off' : '');
-    btn.textContent = n.label;
+    btn.textContent = nutrientLabel(n);
     btn.type = 'button';
     btn.addEventListener('click', () => {
       if (hiddenNutrients.has(n.key)) hiddenNutrients.delete(n.key);
@@ -328,7 +511,10 @@ function renderPresets() {
 
   // No results at all while searching
   if (q && fb.length === 0 && fc.length === 0) {
-    container.innerHTML = '<div class="empty-state">Keine Treffer – klicke &ldquo;+ Neu&rdquo; für manuellen Eintrag.</div>';
+    const div = document.createElement('div');
+    div.className = 'empty-state';
+    div.textContent = t('empty_search');
+    container.appendChild(div);
     return;
   }
 
@@ -340,13 +526,17 @@ function renderPresets() {
       if (!map.has(k)) map.set(k, []);
       map.get(k).push(item);
     });
-    const sorted = new Map([...map.entries()].sort((a, b) => a[0].localeCompare(b[0], 'de')));
-    sorted.forEach(items => items.sort((a, b) => a.name.localeCompare(b.name, 'de')));
+    const collator = new Intl.Collator(uiLang);
+    const sorted = new Map(
+      [...map.entries()].sort((a, b) => collator.compare(tCategory(a[0]), tCategory(b[0])))
+    );
+    sorted.forEach(items => items.sort((a, b) => collator.compare(a.name, b.name)));
     return sorted;
   }
 
   // Helper: render a collapsible category group (or flat labeled section when searching)
-  function appendCategoryGroup(catName, items, isCustom, collapsible) {
+  function appendCategoryGroup(catKey, items, isCustom, collapsible) {
+    const catLabel = catKey === '__suggestions__' ? t('section_suggestions') : tCategory(catKey);
     const grid = document.createElement('div');
     grid.className = 'presets-grid';
     items.forEach(p => grid.appendChild(makeChip({ ...p, _custom: isCustom })));
@@ -356,15 +546,15 @@ function renderPresets() {
       det.className = 'preset-category';
       det.open = false;
       const sum = document.createElement('summary');
-      sum.textContent = catName;
+      sum.textContent = catLabel;
       det.appendChild(sum);
       det.appendChild(grid);
       container.appendChild(det);
     } else {
-      if (catName !== 'Eigene') {
+      if (catKey !== 'Eigene') {
         const lbl = document.createElement('div');
         lbl.className = 'section-label';
-        lbl.textContent = catName;
+        lbl.textContent = catLabel;
         container.appendChild(lbl);
       }
       container.appendChild(grid);
@@ -375,11 +565,11 @@ function renderPresets() {
   if (fb.length > 0) {
     if (q) {
       // Flat while searching
-      appendCategoryGroup('Vorschläge', fb, false, false);
+      appendCategoryGroup('__suggestions__', fb, false, false);
     } else {
       // Collapsible groups by category
-      groupByCategory(fb).forEach((items, catName) => {
-        appendCategoryGroup(catName, items, false, true);
+      groupByCategory(fb).forEach((items, catKey) => {
+        appendCategoryGroup(catKey, items, false, true);
       });
     }
   }
@@ -387,14 +577,15 @@ function renderPresets() {
   // ── Custom presets ────────────────────────
   const hdDiv = document.createElement('div');
   hdDiv.className = 'custom-section-hd';
+  const exportDisabled = customPresets.length === 0;
   hdDiv.innerHTML = `
-    <span class="section-label">Meine Vorlagen</span>
+    <span class="section-label">${esc(t('section_my_presets'))}</span>
     <div class="custom-section-actions">
       <button class="btn btn-ghost btn-sm" id="btn-export"
-        ${customPresets.length === 0 ? 'disabled title="Keine eigenen Vorlagen vorhanden"' : ''}>
-        Exportieren
+        ${exportDisabled ? `disabled title="${esc(t('no_presets_title'))}"` : ''}>
+        ${esc(t('btn_export'))}
       </button>
-      <button class="btn btn-ghost btn-sm" id="btn-import-trigger">Importieren</button>
+      <button class="btn btn-ghost btn-sm" id="btn-import-trigger">${esc(t('btn_import'))}</button>
     </div>`;
   if (fc.length > 0) {
     if (q) {
@@ -404,16 +595,14 @@ function renderPresets() {
       fc.forEach(p => grid.appendChild(makeChip({ ...p, _custom: true })));
       container.appendChild(grid);
     } else {
-      groupByCategory(fc).forEach((items, catName) => {
-        appendCategoryGroup(catName, items, true, true);
+      groupByCategory(fc).forEach((items, catKey) => {
+        appendCategoryGroup(catKey, items, true, true);
       });
     }
   } else {
     const empty = document.createElement('div');
     empty.className = 'custom-empty';
-    empty.textContent = q
-      ? 'Keine eigenen Vorlagen gefunden.'
-      : 'Noch keine eigenen Vorlagen. Im Formular auf „Als Vorlage speichern" klicken.';
+    empty.textContent = q ? t('presets_none_found') : t('presets_none_yet');
     container.appendChild(empty);
   }
 
@@ -422,9 +611,7 @@ function renderPresets() {
   // localStorage notice
   const notice = document.createElement('div');
   notice.className = 'storage-notice';
-  notice.innerHTML = `<span>&#9432;</span>
-    <span>Eingaben werden im <strong>localStorage</strong> dieses Browsers gespeichert –
-    sie sind geräte- und browserspezifisch und gehen bei „Website-Daten löschen" verloren.`;
+  notice.innerHTML = t('storage_notice_html');
   container.appendChild(notice);
 
   // Attach listeners (elements just added to DOM)
@@ -444,13 +631,13 @@ function makeChip(preset) {
     const del = document.createElement('button');
     del.className = 'chip-del';
     del.textContent = '×';
-    del.title = 'Vorlage löschen';
+    del.title = t('delete_preset_title');
     del.addEventListener('click', e => {
       e.stopPropagation();
       customPresets = customPresets.filter(p => p.name !== preset.name);
       saveCustomPresets();
       renderPresets();
-      toast(`Vorlage „${preset.name}" gelöscht.`);
+      toast(t('toast_preset_deleted', { name: preset.name }));
     });
     chip.appendChild(del);
   }
@@ -472,12 +659,12 @@ function renderFoodList() {
       <span class="food-name" title="${esc(food.name)}">${esc(food.name)}</span>
       <div class="food-amount-wrap">
         <input class="food-amount-input" type="number" min="0.1" step="0.1"
-               value="${parseFloat(food.amount)}" data-i="${i}" aria-label="Menge in g">
+               value="${parseFloat(food.amount)}" data-i="${i}" aria-label="${esc(t('food_amount_aria'))}">
         <span class="food-amount-unit">g</span>
       </div>
       <div class="food-btns">
-        <button class="btn btn-edit"   data-act="edit"   data-i="${i}">Bearbeiten</button>
-        <button class="btn btn-remove" data-act="remove" data-i="${i}">Entfernen</button>
+        <button class="btn btn-edit"   data-act="edit"   data-i="${i}">${esc(t('food_btn_edit'))}</button>
+        <button class="btn btn-remove" data-act="remove" data-i="${i}">${esc(t('food_btn_remove'))}</button>
       </div>`;
     el.appendChild(div);
   });
@@ -509,7 +696,7 @@ function renderChart() {
   const gridColor  = dark ? '#1e293b' : '#f1f5f9';
 
   // Multiline y-axis labels: ["Fett", "7.5 / 70 g"]
-  const labels = vis.map(n => [n.label, `${total(n.key).toFixed(1)} / ${n.ref} ${n.unit}`]);
+  const labels = vis.map(n => [nutrientLabel(n), `${total(n.key).toFixed(1)} / ${n.ref} ${n.unit}`]);
 
   const datasets = foods.map((food, i) => ({
     label: food.name,
@@ -562,7 +749,7 @@ function renderChart() {
           min: 0, max: maxPct,
           ticks: { callback: v => v + ' %', color: mutedColor, font: { size: 11 } },
           grid: { color: gridColor },
-          title: { display: true, text: '% des Tages-Referenzwertes (RI)', color: mutedColor, font: { size: 11 } },
+          title: { display: true, text: t('chart_x_title'), color: mutedColor, font: { size: 11 } },
         },
         y: {
           stacked: true,
@@ -579,12 +766,12 @@ function renderChart() {
             const meta  = chart.getDatasetMeta(legendItem.datasetIndex);
             meta.hidden = !meta.hidden;
             chart.data.labels = vis.map(n => {
-              let t = 0;
+              let sum = 0;
               foods.forEach((food, i) => {
                 if (!chart.getDatasetMeta(i).hidden)
-                  t += (parseFloat(food.amount) || 0) / 100 * (parseFloat(food[n.key]) || 0);
+                  sum += (parseFloat(food.amount) || 0) / 100 * (parseFloat(food[n.key]) || 0);
               });
-              return [n.label, `${t.toFixed(1)} / ${n.ref} ${n.unit}`];
+              return [nutrientLabel(n), `${sum.toFixed(1)} / ${n.ref} ${n.unit}`];
             });
             chart.update();
           },
@@ -599,9 +786,9 @@ function renderChart() {
             },
             footer(items) {
               const n   = vis[items[0].dataIndex];
-              const t   = total(n.key);
-              const pct = (t / n.ref) * 100;
-              return `Gesamt: ${t.toFixed(1)} ${n.unit} = ${pct.toFixed(0)} %`;
+              const tot = total(n.key);
+              const pct = (tot / n.ref) * 100;
+              return `${t('chart_total_label')}: ${tot.toFixed(1)} ${n.unit} = ${pct.toFixed(0)} %`;
             },
           },
         },
@@ -617,8 +804,8 @@ function renderSummary() {
   const tbody = document.getElementById('summary-body');
   tbody.innerHTML = '';
   visibleNutrients().forEach(n => {
-    const t   = total(n.key);
-    const pct = (t / n.ref) * 100;
+    const tot = total(n.key);
+    const pct = (tot / n.ref) * 100;
     let fill, cls;
     if (n.minGoal) {
       if      (pct >= 100) { fill = '#22c55e'; cls = 'c-ok';   }
@@ -631,8 +818,8 @@ function renderSummary() {
     }
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><strong>${n.label}</strong></td>
-      <td>${t.toFixed(1)} ${n.unit}</td>
+      <td><strong>${esc(nutrientLabel(n))}</strong></td>
+      <td>${tot.toFixed(1)} ${n.unit}</td>
       <td>${n.ref} ${n.unit}</td>
       <td>
         <div class="pct-row">
@@ -653,8 +840,8 @@ const dialog = document.getElementById('food-dialog');
 
 function openAddDialog() {
   editIndex = null;
-  document.getElementById('dlg-title').textContent  = 'Lebensmittel hinzufügen';
-  document.getElementById('btn-submit').textContent = 'Hinzufügen';
+  document.getElementById('dlg-title').textContent  = t('dlg_title_add');
+  document.getElementById('btn-submit').textContent = t('btn_add');
   document.getElementById('food-form').reset();
   document.getElementById('nutrient-details').open = true;
   clearDlgError();
@@ -665,8 +852,8 @@ function openAddDialog() {
 
 function openEditDialog(i) {
   editIndex = i;
-  document.getElementById('dlg-title').textContent  = 'Lebensmittel bearbeiten';
-  document.getElementById('btn-submit').textContent = 'Speichern';
+  document.getElementById('dlg-title').textContent  = t('dlg_title_edit');
+  document.getElementById('btn-submit').textContent = t('btn_save');
   fillForm(foods[i]);
   document.getElementById('nutrient-details').open = true;
   clearDlgError();
@@ -677,8 +864,8 @@ function openEditDialog(i) {
 
 function openPresetDialog(preset) {
   editIndex = null;
-  document.getElementById('dlg-title').textContent  = 'Lebensmittel hinzufügen';
-  document.getElementById('btn-submit').textContent = 'Hinzufügen';
+  document.getElementById('dlg-title').textContent  = t('dlg_title_add');
+  document.getElementById('btn-submit').textContent = t('btn_add');
   fillForm({ ...preset, amount: '' });
   document.getElementById('nutrient-details').open = false;
   clearDlgError();
@@ -738,7 +925,7 @@ function showDlgPresetMsg(msg, type = 'ok') {
   btn.style.color = type === 'ok' ? 'var(--primary)' : 'var(--danger)';
   clearTimeout(presetMsgTimer);
   presetMsgTimer = setTimeout(() => {
-    btn.textContent = 'Vorlage speichern';
+    btn.textContent = t('btn_save_preset');
     btn.style.color = '';
   }, 2500);
 }
@@ -747,15 +934,15 @@ function showDlgPresetMsg(msg, type = 'ok') {
    EXPORT / IMPORT
 ═══════════════════════════════════════════ */
 function exportPresets() {
-  if (customPresets.length === 0) { toast('Keine eigenen Vorlagen zum Exportieren.'); return; }
+  if (customPresets.length === 0) { toast(t('toast_export_empty')); return; }
   const blob = new Blob([JSON.stringify(customPresets, null, 2)], { type: 'application/json' });
   const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement('a'), { href: url, download: 'meal-radar-vorlagen.json' });
+  const a    = Object.assign(document.createElement('a'), { href: url, download: t('export_filename') });
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  toast(`${customPresets.length} Vorlage(n) exportiert.`);
+  toast(t('toast_export_count', { n: customPresets.length }));
 }
 
 function importPresets(file) {
@@ -785,9 +972,11 @@ function importPresets(file) {
       });
       saveCustomPresets();
       renderPresets();
-      toast(`${added} Vorlage(n) importiert${skipped > 0 ? `, ${skipped} übersprungen` : ''}.`);
+      toast(skipped > 0
+        ? t('toast_import_count_skipped', { n: added, s: skipped })
+        : t('toast_import_count', { n: added }));
     } catch {
-      toast('Ungültige Datei – bitte eine Meal-Radar-JSON-Exportdatei wählen.');
+      toast(t('toast_import_invalid'));
     }
   };
   reader.readAsText(file);
@@ -802,22 +991,22 @@ document.getElementById('food-form').addEventListener('submit', e => {
   e.preventDefault();
   const data = getFormValues();
   if (!data.name) {
-    showDlgError('Bitte einen Produktnamen eingeben.');
+    showDlgError(t('err_name_required'));
     document.getElementById('f-name').focus();
     return;
   }
   if (!(parseFloat(data.amount) > 0)) {
-    showDlgError('Bitte eine gültige Menge in Gramm eingeben (größer als 0).');
+    showDlgError(t('err_amount_invalid'));
     document.getElementById('f-amount').focus();
     return;
   }
   clearDlgError();
   if (editIndex !== null) {
     foods[editIndex] = data;
-    toast(`„${data.name}" aktualisiert.`);
+    toast(t('toast_item_updated', { name: data.name }));
   } else {
     foods.push(data);
-    toast(`„${data.name}" hinzugefügt.`);
+    toast(t('toast_item_added', { name: data.name }));
   }
   dialog.close();
   renderAll();
@@ -839,15 +1028,15 @@ dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close();
 // Save as preset
 document.getElementById('btn-save-preset').addEventListener('click', () => {
   const data = getFormValues();
-  if (!data.name) { showDlgPresetMsg('Bitte zuerst einen Produktnamen eingeben.', 'err'); return; }
+  if (!data.name) { showDlgPresetMsg(t('err_name_first'), 'err'); return; }
   if ([...BUILTIN, ...customPresets].some(p => p.name === data.name)) {
-    showDlgPresetMsg(`Existiert bereits als Vorlage`, 'err'); return;
+    showDlgPresetMsg(t('err_preset_exists'), 'err'); return;
   }
   const { amount, ...preset } = data;
   customPresets.push(preset);
   saveCustomPresets();
   renderPresets();
-  showDlgPresetMsg(`Gespeichert`, 'ok');
+  showDlgPresetMsg(t('toast_saved'), 'ok');
 });
 
 // New food button
@@ -887,14 +1076,14 @@ document.getElementById('btn-copy').addEventListener('click', () => {
   if (!foods.length) return;
   const url = generateShareURL();
   navigator.clipboard.writeText(url)
-    .then(() => toast('Link kopiert!'))
-    .catch(() => window.prompt('Link zum Kopieren:', url));
+    .then(() => toast(t('toast_link_copied')))
+    .catch(() => window.prompt(t('prompt_link'), url));
 });
 
 // Clear all
 document.getElementById('btn-clear').addEventListener('click', () => {
   if (!foods.length) return;
-  if (confirm('Alle Einträge löschen?')) { foods = []; renderAll(); }
+  if (confirm(t('confirm_clear_all'))) { foods = []; renderAll(); }
 });
 
 // File import
@@ -943,6 +1132,51 @@ function initCollapsible() {
 }
 
 /* ═══════════════════════════════════════════
+   I18N – apply / toggle
+═══════════════════════════════════════════ */
+function applyLang(lang) {
+  if (lang !== 'de' && lang !== 'en') lang = 'en';
+  uiLang = lang;
+  localStorage.setItem(LANG_KEY, lang);
+  document.documentElement.lang = lang;
+  document.title = t('page_title');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (STRINGS[lang][key] !== undefined) el.textContent = STRINGS[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.dataset.i18nHtml;
+    if (STRINGS[lang][key] !== undefined) el.innerHTML = STRINGS[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (STRINGS[lang][key] !== undefined) el.placeholder = STRINGS[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.dataset.i18nTitle;
+    if (STRINGS[lang][key] !== undefined) el.title = STRINGS[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+    const key = el.dataset.i18nAriaLabel;
+    if (STRINGS[lang][key] !== undefined) el.setAttribute('aria-label', STRINGS[lang][key]);
+  });
+  document.querySelectorAll('[data-i18n-nutrient]').forEach(el => {
+    const n = NUTRIENTS.find(x => x.key === el.dataset.i18nNutrient);
+    if (n) el.textContent = nutrientLabel(n);
+  });
+
+  document.getElementById('uiLangDe')?.classList.toggle('active', lang === 'de');
+  document.getElementById('uiLangEn')?.classList.toggle('active', lang === 'en');
+
+  syncThemeButton();
+  if (typeof renderAll === 'function') renderAll();
+}
+
+document.getElementById('uiLangDe')?.addEventListener('click', () => applyLang('de'));
+document.getElementById('uiLangEn')?.addEventListener('click', () => applyLang('en'));
+
+/* ═══════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════ */
 customPresets   = loadCustomPresets();
@@ -950,5 +1184,5 @@ hiddenNutrients = loadHiddenNutrients();
 initTheme();
 loadFromShareURL();
 loadFoods();
-renderAll();
+applyLang(uiLang);
 initCollapsible();

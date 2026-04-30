@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="light">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meal Radar – Nährstoffanalyse</title>
+  <title>Meal Radar – Nutrient Analysis</title>
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
@@ -28,59 +28,65 @@
   <div class="header-inner">
     <div>
       <h1>Meal Radar</h1>
-      <p>Nährstoffanalyse mit Tages-Referenzwerten</p>
+      <p data-i18n="subtitle">Nutrient analysis with daily reference intakes</p>
     </div>
-    <button id="theme-toggle" class="theme-btn" title="Dunkel-Modus">Dark</button>
+    <div class="header-actions">
+      <div class="ui-lang-toggle">
+        <button id="uiLangDe" class="ui-lang-btn" type="button">DE</button>
+        <button id="uiLangEn" class="ui-lang-btn active" type="button">EN</button>
+      </div>
+      <button id="theme-toggle" class="theme-btn" data-i18n-title="theme_dark_title" title="Dark mode">Dark</button>
+    </div>
   </div>
 </header>
 
 <main>
 
-  <!-- LEBENSMITTEL HINZUFÜGEN / VORLAGEN -->
+  <!-- FOODS / PRESETS -->
   <div class="card">
-    <div class="card-title">Lebensmittel</div>
+    <div class="card-title" data-i18n="card_food">Foods</div>
     <div class="search-bar">
-      <input id="preset-search" type="search" placeholder="Lebensmittel suchen …" autocomplete="off">
-      <button class="btn btn-primary" id="btn-new">+ Neu</button>
+      <input id="preset-search" type="search" data-i18n-placeholder="search_placeholder" placeholder="Search foods …" autocomplete="off">
+      <button class="btn btn-primary" id="btn-new" data-i18n="btn_new">+ New</button>
     </div>
     <div id="presets-container"></div>
   </div>
 
-  <!-- IN DER MAHLZEIT -->
+  <!-- IN THIS MEAL -->
   <div class="card" id="food-list-card" style="display:none">
-    <div class="card-title card-toggle">In der Mahlzeit</div>
+    <div class="card-title card-toggle" data-i18n="card_meal">In this meal</div>
     <div class="card-body">
       <div class="food-list" id="food-list"></div>
     </div>
   </div>
 
-  <!-- DIAGRAMM -->
+  <!-- CHART -->
   <div class="card" id="chart-card" style="display:none">
-    <div class="card-title card-toggle">Anteil an Tages-Referenzwerten</div>
+    <div class="card-title card-toggle" data-i18n="card_chart">Share of daily reference intake</div>
     <div class="card-body">
       <div id="nutrient-toggles" class="nutrient-toggles"></div>
       <div class="chart-wrapper" id="chart-wrapper">
         <canvas id="chart"></canvas>
       </div>
-      <p class="ri-hint">
-        Rote Linie = 100 % RI &nbsp;|&nbsp;
-        Y-Achse: Nährstoff &middot; Gesamtmenge&thinsp;/&thinsp;Referenzwert &nbsp;|&nbsp;
-        Ballaststoffe: DGE-Richtwert &ge;30&thinsp;g/Tag
+      <p class="ri-hint" data-i18n-html="ri_hint_html">
+        Red line = 100 % RI &nbsp;|&nbsp;
+        Y-axis: nutrient &middot; total amount&thinsp;/&thinsp;reference value &nbsp;|&nbsp;
+        Fibre: DGE guideline &ge;30&thinsp;g/day
       </p>
     </div>
   </div>
 
-  <!-- NÄHRSTOFFBILANZ -->
+  <!-- NUTRIENT BALANCE -->
   <div class="card" id="summary-card" style="display:none">
-    <div class="card-title card-toggle">Nährstoffbilanz</div>
+    <div class="card-title card-toggle" data-i18n="card_balance">Nutrient balance</div>
     <div class="card-body">
       <table class="summary-table">
         <thead>
           <tr>
-            <th>Nährstoff</th>
-            <th>Gesamt</th>
-            <th>RI&thinsp;/&thinsp;Tag</th>
-            <th>Anteil</th>
+            <th data-i18n="th_nutrient">Nutrient</th>
+            <th data-i18n="th_total">Total</th>
+            <th data-i18n="th_ri">RI / day</th>
+            <th data-i18n="th_share">Share</th>
           </tr>
         </thead>
         <tbody id="summary-body"></tbody>
@@ -88,38 +94,38 @@
     </div>
   </div>
 
-  <!-- AKTIONEN -->
+  <!-- ACTIONS -->
   <div class="card">
     <div class="actions">
-      <button class="btn btn-secondary" id="btn-copy">Link kopieren</button>
-      <button class="btn btn-danger"    id="btn-clear">Alle löschen</button>
+      <button class="btn btn-secondary" id="btn-copy"  data-i18n="btn_copy_link">Copy link</button>
+      <button class="btn btn-danger"    id="btn-clear" data-i18n="btn_clear_all">Clear all</button>
     </div>
   </div>
 
 </main>
 
 <footer>
-  <p>
-    Referenzwerte gemäß EU-Verordnung&thinsp;Nr.&thinsp;1169/2011 für <strong>Erwachsene</strong>.
-    Ballaststoffe: DGE-Richtwert (&ge;30&thinsp;g/Tag).
-    Alle Angaben ohne Gewähr.
+  <p data-i18n-html="footer_disclaimer_html">
+    Reference intakes per EU Regulation&thinsp;No.&thinsp;1169/2011 for <strong>adults</strong>.
+    Fibre: DGE guideline (&ge;30&thinsp;g/day).
+    All information without warranty.
   </p>
   <div class="footer-links">
     <span class="footer-version">v1.0</span>
     <span aria-hidden="true">&middot;</span>
-    <a href="https://github.com/Macusercom/Meal-Radar" target="_blank" rel="noopener">Quellcode</a>
+    <a href="https://github.com/Macusercom/Meal-Radar" target="_blank" rel="noopener" data-i18n="footer_source">Source code</a>
     <span aria-hidden="true">&middot;</span>
-    <a href="datenschutz.html">Datenschutz</a>
+    <a href="privacy.html" data-i18n="footer_privacy">Privacy</a>
     <span aria-hidden="true">&middot;</span>
-    <a href="impressum.html">Impressum</a>
+    <a href="imprint.html" data-i18n="footer_imprint">Imprint</a>
   </div>
 </footer>
 
-<!-- DIALOG: Lebensmittel hinzufügen / bearbeiten -->
+<!-- DIALOG: add / edit food -->
 <dialog id="food-dialog">
   <div class="dlg-header">
-    <h2 id="dlg-title">Lebensmittel hinzufügen</h2>
-    <button class="dlg-close" id="dlg-close" type="button" aria-label="Schließen">&#x2715;</button>
+    <h2 id="dlg-title" data-i18n="dlg_title_add">Add food</h2>
+    <button class="dlg-close" id="dlg-close" type="button" data-i18n-aria-label="dlg_close" aria-label="Close">&#x2715;</button>
   </div>
 
   <div class="dlg-body">
@@ -127,12 +133,12 @@
     <form id="food-form" novalidate>
       <div class="form-grid">
         <div class="field span2">
-          <label for="f-name">Produkt *</label>
-          <input id="f-name" name="name" type="text" placeholder="z.&nbsp;B. Haferflocken" autocomplete="off" required>
+          <label for="f-name" data-i18n="label_product">Product *</label>
+          <input id="f-name" name="name" type="text" data-i18n-placeholder="ph_product" placeholder="e.g. rolled oats" autocomplete="off" required>
         </div>
         <div class="field span2">
-          <label for="f-amount">Menge (g) *</label>
-          <input id="f-amount" name="amount" type="number" min="0.1" step="0.1" placeholder="z.&nbsp;B. 80">
+          <label for="f-amount" data-i18n="label_amount">Amount (g) *</label>
+          <input id="f-amount" name="amount" type="number" min="0.1" step="0.1" data-i18n-placeholder="ph_amount" placeholder="e.g. 80">
           <div class="amount-presets">
             <button type="button" class="amount-btn" data-g="25">25</button>
             <button type="button" class="amount-btn" data-g="50">50</button>
@@ -145,38 +151,38 @@
           </div>
         </div>
         <details id="nutrient-details" class="span2" open>
-          <summary>Nährwerte (g&thinsp;/&thinsp;100&thinsp;g)</summary>
+          <summary data-i18n="nutrient_summary">Nutrition (g / 100 g)</summary>
           <div class="nutrient-sub-grid">
             <div class="field">
               <label for="f-kcal">kcal</label>
               <input id="f-kcal" name="kcal" type="number" min="0" step="0.1" placeholder="0">
             </div>
             <div class="field">
-              <label for="f-fat">Fett</label>
+              <label for="f-fat" data-i18n-nutrient="fat">Fat</label>
               <input id="f-fat" name="fat" type="number" min="0" step="0.01" placeholder="0">
             </div>
             <div class="field">
-              <label for="f-sfat">Ges. Fettsäuren</label>
+              <label for="f-sfat" data-i18n-nutrient="sfat">Saturated fat</label>
               <input id="f-sfat" name="sfat" type="number" min="0" step="0.01" placeholder="0">
             </div>
             <div class="field">
-              <label for="f-carbs">Kohlenhydrate</label>
+              <label for="f-carbs" data-i18n-nutrient="carbs">Carbohydrates</label>
               <input id="f-carbs" name="carbs" type="number" min="0" step="0.01" placeholder="0">
             </div>
             <div class="field">
-              <label for="f-sugar">Zucker</label>
+              <label for="f-sugar" data-i18n-nutrient="sugar">Sugar</label>
               <input id="f-sugar" name="sugar" type="number" min="0" step="0.01" placeholder="0">
             </div>
             <div class="field">
-              <label for="f-fiber">Ballaststoffe</label>
+              <label for="f-fiber" data-i18n-nutrient="fiber">Fibre</label>
               <input id="f-fiber" name="fiber" type="number" min="0" step="0.01" placeholder="0">
             </div>
             <div class="field">
-              <label for="f-protein">Eiweiß</label>
+              <label for="f-protein" data-i18n-nutrient="protein">Protein</label>
               <input id="f-protein" name="protein" type="number" min="0" step="0.01" placeholder="0">
             </div>
             <div class="field">
-              <label for="f-salt">Salz</label>
+              <label for="f-salt" data-i18n-nutrient="salt">Salt</label>
               <input id="f-salt" name="salt" type="number" min="0" step="0.01" placeholder="0">
             </div>
           </div>
@@ -186,10 +192,10 @@
   </div>
 
   <div class="dlg-footer">
-    <button type="button" class="btn btn-ghost btn-sm" id="btn-save-preset">Vorlage speichern</button>
+    <button type="button" class="btn btn-ghost btn-sm" id="btn-save-preset" data-i18n="btn_save_preset">Save preset</button>
     <div class="dlg-footer-btns">
-      <button type="button" class="btn btn-secondary" id="btn-cancel">Abbrechen</button>
-      <button type="submit" form="food-form" class="btn btn-primary" id="btn-submit">Hinzufügen</button>
+      <button type="button" class="btn btn-secondary" id="btn-cancel" data-i18n="btn_cancel">Cancel</button>
+      <button type="submit" form="food-form" class="btn btn-primary" id="btn-submit" data-i18n="btn_add">Add</button>
     </div>
   </div>
 
