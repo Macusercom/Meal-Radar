@@ -1,4 +1,4 @@
-<img src="favicon/android-chrome-192x192.png" alt="icon" height="100">
+<img src="docs/favicon/android-chrome-192x192.png" alt="icon" height="100">
 
 # Meal Radar
 A web app for nutritional analysis of meals. Add foods, enter their nutrient values per 100&nbsp;g, and see the totals visualized as a percentage of the EU daily reference intake (RI). Works entirely in the browser — no server, no build step.
